@@ -1,0 +1,15 @@
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String
+  status      TaskStatus @default(TODO)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DONE
+}
