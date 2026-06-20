@@ -22,23 +22,17 @@ export const createTask = async (req: Request, res: Response, next: NextFunction
 }
 
 
-export const getAllTasks = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        const pageParam = req.query.page;
-        const page = pageParam ? Number(Array.isArray(pageParam) ? pageParam[0] : pageParam) : 1;
-        const pageSize = 8; // fixed page size as requested
-
-        const result = await taskService.getAllTasks(page, pageSize);
-
+export const getAllTasks= async(req:Request, res:Response ,next:NextFunction) => {
+    try{
+        const tasks = await taskService.getAllTasks();
         return res.status(200).json({
             success: true,
-            data: result.data,
-            meta: result.meta,
-        });
+            data: tasks,
+        })
     } catch (error) {
         next(error);
     }
-};
+}
 
 export const updateTaskStatus = async(req:Request, res:Response ,next:NextFunction) => {
     try{
