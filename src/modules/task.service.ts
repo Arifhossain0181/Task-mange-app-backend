@@ -11,12 +11,30 @@ export const createTask = async (data: CreateTaskInput) => {
   });
 };
 
-export const getAllTasks = async () => {
-  return await prisma.task.findMany({
-    orderBy: {
-      createdAt: "desc",
+export const getAllTasks = async (page = 1, pageSize = 8) => {
+  const take = pageSize;
+  const skip = (Math.max(page, 1) - 1) * take;
+
+  const [total, data] = await Promise.all([
+    prisma.task.count(),
+    prisma.task.findMany({
+      orderBy: { createdAt: "desc" },
+      skip,
+      take,
+    }),
+  ]);
+
+  const totalPages = Math.ceil(total / take) || 1;
+
+  return {
+    data,
+    meta: {
+      total,
+      page: Math.max(page, 1),
+      pageSize: take,
+      totalPages,
     },
-  });
+  };
 };
 export const updateTask = async (
   id: string,
